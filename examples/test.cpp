@@ -4,6 +4,10 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+
+#include <wiringPi.h>
+#include <wiringSerial.h>
+
 #include "headers/MLX90640_API.h"
 
 #define ANSI_COLOR_RED     "\x1b[31m"
@@ -49,6 +53,20 @@ int main(){
     int frames = 30;
     int subpage;
     static float mlx90640To[768];
+
+    // Open serial port
+    int fd ;
+    if ((fd = serialOpen ("/dev/ttyS0", 9600)) < 0)
+    {
+        fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
+        return 1 ;
+    }
+    if (wiringPiSetup () == -1)
+    {
+        fprintf (stdout, "Unable to start wiringPi: %s\n", strerror (errno)) ;
+        return 1 ;
+    }
+
     while (1){
         state = !state;
         //printf("State: %d \n", state);
@@ -64,6 +82,8 @@ int main(){
             for(int y = 0; y < 24; y++){
                 //std::cout << image[32 * y + x] << ",";
                 float val = mlx90640To[32 * (23-y) + x];
+                serialPutchar (fd, val);
+                serialPutchar (fd, ',');
                 if(val > 99.99) val = 99.99;
                 if(val > 32.0){
                     printf(ANSI_COLOR_MAGENTA FMT_STRING ANSI_COLOR_RESET, val);
@@ -91,6 +111,7 @@ int main(){
         }
         //std::this_thread::sleep_for(std::chrono::milliseconds(20));
         printf("\x1b[33A");
+        serialPutchar (fd, 13);
     }
     return 0;
 }
