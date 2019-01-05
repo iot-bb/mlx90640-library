@@ -38,7 +38,7 @@ int main(){
 
     MLX90640_SetDeviceMode(MLX_I2C_ADDR, 0);
     MLX90640_SetSubPageRepeat(MLX_I2C_ADDR, 0);
-    MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b010);
+    MLX90640_SetRefreshRate(MLX_I2C_ADDR, 0b011);
     MLX90640_SetChessMode(MLX_I2C_ADDR);
     //MLX90640_SetSubPage(MLX_I2C_ADDR, 0);
     printf("Configured...\n");
@@ -56,7 +56,7 @@ int main(){
 
     // Open serial port
     int fd ;
-    if ((fd = serialOpen ("/dev/ttyS0", 9600)) < 0)
+    if ((fd = serialOpen ("/dev/ttyS0", 115200)) < 0)
     {
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
         return 1 ;
@@ -78,12 +78,16 @@ int main(){
         printf("Subpage: %d\n", subpage);
         //MLX90640_SetSubPage(MLX_I2C_ADDR,!subpage);
 
-        for(int x = 0; x < 32; x++){
-            for(int y = 0; y < 24; y++){
+        for(int x = 0; x < 24; x++){
+            for(int y = 0; y < 32; y++){
                 //std::cout << image[32 * y + x] << ",";
-                float val = mlx90640To[32 * (23-y) + x];
-                serialPutchar (fd, val);
-                serialPutchar (fd, ',');
+                float val = mlx90640To[32 * (23-x) + y];
+                char buf[8];
+                sprintf(buf,"%.0f", val);
+                serialPuts (fd, buf);
+                if(!(x == 23 && y == 31 )) {
+		    serialPutchar (fd, ',');
+		}
                 if(val > 99.99) val = 99.99;
                 if(val > 32.0){
                     printf(ANSI_COLOR_RED FMT_STRING ANSI_COLOR_RESET, val);
@@ -111,7 +115,8 @@ int main(){
         }
         //std::this_thread::sleep_for(std::chrono::milliseconds(20));
         printf("\x1b[33A");
-        serialPutchar (fd, 13);
-    }
+//        serialPuts(fd, "\n");
+	serialPutchar (fd, 13);  
+  }
     return 0;
 }

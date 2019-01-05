@@ -28,7 +28,7 @@ hotspot: examples/hotspot.o examples/lib/fb.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
 
 test: examples/test.o libMLX90640_API.a
-	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS)
+	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS) -lwiringPi
 
 serial: examples/serial.o libMLX90640_API.a
 	$(CXX) -L/home/pi/mlx90640-library $^ -o $@ $(I2C_LIBS) -lwiringPi
