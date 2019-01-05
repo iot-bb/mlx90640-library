@@ -86,25 +86,25 @@ int main(){
                 serialPutchar (fd, ',');
                 if(val > 99.99) val = 99.99;
                 if(val > 32.0){
-                    printf(ANSI_COLOR_MAGENTA FMT_STRING ANSI_COLOR_RESET, val);
-                }
-                else if(val > 29.0){
                     printf(ANSI_COLOR_RED FMT_STRING ANSI_COLOR_RESET, val);
                 }
+                else if(val > 29.0){
+                    printf(ANSI_COLOR_YELLOW FMT_STRING ANSI_COLOR_RESET, val);
+                }
                 else if (val > 26.0){
-                    printf(ANSI_COLOR_YELLOW FMT_STRING ANSI_COLOR_YELLOW, val);
+                    printf(ANSI_COLOR_GREEN FMT_STRING ANSI_COLOR_YELLOW, val);
                 }
                 else if ( val > 20.0 ){
-                    printf(ANSI_COLOR_NONE FMT_STRING ANSI_COLOR_RESET, val);
+                    printf(ANSI_COLOR_BLUE FMT_STRING ANSI_COLOR_RESET, val);
                 }
                 else if (val > 17.0) {
-                    printf(ANSI_COLOR_GREEN FMT_STRING ANSI_COLOR_RESET, val);
-                }
-                else if (val > 10.0) {
                     printf(ANSI_COLOR_CYAN FMT_STRING ANSI_COLOR_RESET, val);
                 }
+                else if (val > 10.0) {
+                    printf(ANSI_COLOR_NONE FMT_STRING ANSI_COLOR_RESET, val);
+                }
                 else {
-                    printf(ANSI_COLOR_BLUE FMT_STRING ANSI_COLOR_RESET, val);
+                    printf(ANSI_COLOR_NONE FMT_STRING ANSI_COLOR_RESET, val);
                 }
             }
             std::cout << std::endl;
